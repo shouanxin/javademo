@@ -25,4 +25,22 @@ public class PostCommentTagRequest implements Serializable {
 
     /** 标签名称 .*/
     private String tagName;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PostCommentTagRequest that = (PostCommentTagRequest) o;
+
+        if (dataId != null ? !dataId.equals(that.dataId) : that.dataId != null) return false;
+        return tagName != null ? tagName.equals(that.tagName) : that.tagName == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = dataId != null ? dataId.hashCode() : 0;
+        result = 31 * result + (tagName != null ? tagName.hashCode() : 0);
+        return result;
+    }
 }
