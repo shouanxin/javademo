@@ -12,14 +12,18 @@ public class LinkedListLruCacheTest {
 
     @Test
     public void get() {
-        LRUCache<String, String> lruCache = this.init();
+        LruCache<String, String> lruCache = this.init();
+        System.out.println(lruCache.toString());
+        System.out.println("====================");
         System.out.println(lruCache.get("3"));
         System.out.println(lruCache.toString());
     }
 
     @Test
     public void put() {
-        LRUCache<String, String> lruCache = this.init();
+        LruCache<String, String> lruCache = this.init();
+        System.out.println(lruCache.toString());
+        System.out.println("====================");
         lruCache.put("5", "5");
         System.out.println(lruCache.toString());
         System.out.println("====================");
@@ -27,13 +31,13 @@ public class LinkedListLruCacheTest {
         System.out.println(lruCache.toString());
     }
 
-    private LRUCache<String, String> init() {
-        LRUCache<String, String> lruCache = new LinkedListLruCache<>(4);
+    private LruCache<String, String> init() {
+        LruCache<String, String> lruCache = new LinkedListLruCache<>(4);
 
         lruCache.put("1", "1");
         lruCache.put("2", "2");
         lruCache.put("3", "3");
-        //lruCache.put("4", "4");
+        lruCache.put("4", "4");
         return lruCache;
     }
 }

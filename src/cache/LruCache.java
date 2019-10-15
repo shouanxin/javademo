@@ -12,7 +12,7 @@ package cache;
  * @author: shouanxin
  * @date: 2019/9/21
  */
-public interface LRUCache<K, V> {
+public interface LruCache<K, V> {
 
     /**
      * 功能描述: 〈获取数据〉.

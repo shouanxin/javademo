@@ -18,7 +18,7 @@ import java.util.Map;
  * @author: shouanxin
  * @date: 2019/9/21
  */
-public class LinkedListLruCache<K, V> implements LRUCache<K, V> {
+public class LinkedListLruCache<K, V> implements LruCache<K, V> {
 
     /** 缓存限制长度 .*/
     private final int limit;
@@ -39,7 +39,7 @@ public class LinkedListLruCache<K, V> implements LRUCache<K, V> {
         if (!removeFlag) {
             return null;
         }
-        keyLinkedList.addLast(k);
+        keyLinkedList.addFirst(k);
         return cacheMap.get(k);
     }
 
@@ -49,11 +49,11 @@ public class LinkedListLruCache<K, V> implements LRUCache<K, V> {
         Preconditions.checkNotNull(v, "value is null");
 
         if (keyLinkedList.size() == limit) {
-            K oldKey = keyLinkedList.removeFirst();
+            K oldKey = keyLinkedList.removeLast();
             cacheMap.remove(oldKey);
         }
 
-        keyLinkedList.addLast(k);
+        keyLinkedList.addFirst(k);
         cacheMap.put(k, v);
     }
 
