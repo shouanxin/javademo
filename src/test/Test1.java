@@ -12,8 +12,7 @@ import com.google.common.collect.Lists;
 import org.apache.lucene.util.RamUsageEstimator;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -57,5 +56,19 @@ public class Test1 {
 
         List<String> collect = list.stream().filter(p -> p.equals(str)).collect(Collectors.toList());
         System.out.println(collect);
+    }
+
+    @Test
+    public void testHashMap() {
+        Map<String, String> map = new HashMap<>();
+        map.put("sku1", "sku1");
+        map.put("sku2", "sku2");
+
+        Map<String, Set<String>> setMap = new HashMap<>();
+        Set<String> stringSet = new HashSet<>();
+        stringSet.add(map.get("sku1"));
+        stringSet.add(map.get("sku2"));
+        setMap.put("a", stringSet);
+        System.out.println(setMap);
     }
 }

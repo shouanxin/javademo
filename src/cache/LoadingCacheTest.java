@@ -15,6 +15,7 @@ import org.apache.poi.util.StringUtil;
 import org.junit.Test;
 
 import java.util.concurrent.*;
+import java.util.function.Function;
 
 /**
  * 〈〉.
@@ -152,55 +153,44 @@ public class LoadingCacheTest {
     }
 
     @Test
-    public void testThread() throws Exception{
-        CacheLoader<String, String> cacheLoader = new CacheLoader<String, String>() {
-            @Override
-            public String load(String key) throws Exception {
-                log.info("load start------------------   {}", System.nanoTime());
-                // do something
-                return key + 1;
-            }
-        };
-
-        LoadingCache<String, String> cache = CacheBuilder.newBuilder()
-                .maximumSize(3)
+    public void testAsync(){
+        LoadingCache<String, String> warehouseCache = CacheBuilder.newBuilder()
                 .concurrencyLevel(100)
-                .refreshAfterWrite(10, TimeUnit.SECONDS)
-                .build(cacheLoader);
+                .refreshAfterWrite(1, TimeUnit.SECONDS)
+                .maximumSize(3000)
+                .build(this.buildAysncCacheLoader(this :: getCache, executor));
 
-        this.initCache(cache);
+        //warehouseCache.put("null", "init null");
 
-        Runnable runnable1 = () -> {
-            for (int i = 0; i < 100; i++) {
+        try {
+            System.out.println("exception before: " + warehouseCache.getUnchecked("null"));
+            Thread.sleep(2000);
+            System.out.println("exception after: " + warehouseCache.get("null"));
+        } catch (Exception e) {
+            log.error("exce ", e);
+        }
+    }
+
+    public String getCache(String key) {
+        if ("null".equals(key)) {
+            throw null;
+        } else {
+            return key + 1;
+        }
+    }
+
+    public <K, V> CacheLoader<K, V> buildAysncCacheLoader(final Function<K, V> function,
+                                                                 final Executor executor) {
+        return CacheLoader.asyncReloading(new CacheLoader<K, V>() {
+            @Override
+            public V load(K k) throws Exception {
+                log.info("线程{}刷新缓存", Thread.currentThread().getId());
                 try {
-                    log.info("Runnable1 Before Get Cache");
-                    log.info("Runnable1 {}" , cache.get("test"));
-                    log.info("Runnable1 After Get Cache");
-                    Thread.sleep(1000);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    return function.apply(k);
+                }finally {
+                    log.info("线程{}刷新缓存结束", Thread.currentThread().getId());
                 }
             }
-        };
-        Runnable runnable2 = () -> {
-            for (int i = 0; i < 100; i++) {
-                try {
-                    log.info("Runnable2 Before Get Cache");
-                    log.info("Runnable2 {}" , cache.get("test"));
-                    log.info("Runnable2 After Get Cache");
-                    Thread.sleep(1000);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        Thread thread1 = new Thread(runnable1);
-        Thread thread2 = new Thread(runnable2);
-        thread1.start();
-        thread2.start();
+        }, executor);
     }
 }
