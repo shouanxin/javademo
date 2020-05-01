@@ -44,17 +44,18 @@ public class TestAsyncThreadCache {
         log.info("{} begin to mock query db...", Thread.currentThread().getName());
         Thread.sleep(50);
         log.info("{} success to mock query db...", Thread.currentThread().getName());
-        return UUID.randomUUID().toString();
+        return null;
+//        return UUID.randomUUID().toString();
     };
 
     /** 1s过期 .*/
-    private static LoadingCache<String, String> cache = CacheBuilder.newBuilder().refreshAfterWrite(1, TimeUnit.SECONDS)
+    private static LoadingCache<String, String> cache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.SECONDS)
             .build(asyncReloading);
 
     public static void main(String[] args) throws Exception {
         // 手动添加一条缓存数据,睡眠1.5s让其过期
-//        cache.put("name", "init-value");
-//        Thread.sleep(1000);
+        cache.put("name", "init-value");
+        Thread.sleep(1000);
 
         for (int i = 0; i < 100; i++) {
             startThread(i);
