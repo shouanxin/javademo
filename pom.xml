@@ -10,7 +10,7 @@
     <properties>
         <spring-version>4.3.14.RELEASE</spring-version>
         <profiles.dir>src/test/properties</profiles.dir>
-        <poi.version>3.17</poi.version>
+        <poi.version>4.1.1</poi.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
